@@ -86,64 +86,88 @@ The project uses the [Pima Indians Diabetes Dataset](https://www.kaggle.com/data
 - Selects top features using Mutual Information, ensuring fuzzy-required features (Glucose, BMI, BloodPressure, Age) are retained.
 - Scales features using StandardScaler.
 
-Model Architecture
-Neural Network
+# 🧠 Model Architecture & Results
 
-Input: 10 features (Pregnancies, Age, BloodPressure, Insulin, Insulin_Pedigree, SkinThickness, Log_Insulin, Glucose, Glucose_BMI, BMI)
+## 🔹 Neural Network
 
-Architecture:
-Input Layer
-Dense(128, ReLU, L2=0.0001) → BatchNorm → Dropout(0.3)
-Dense(64, ReLU, L2=0.0001) → BatchNorm → Dropout(0.2)
-Dense(32, ReLU, L2=0.0001) → BatchNorm → Dropout(0.1)
-Output(Sigmoid)
+**Input Features (10 total):**  
+- Pregnancies  
+- Age  
+- BloodPressure  
+- Insulin  
+- Insulin_Pedigree  
+- SkinThickness  
+- Log_Insulin  
+- Glucose  
+- Glucose_BMI  
+- BMI  
 
+**Architecture:**  
+- Input Layer  
+- Dense(128, ReLU, L2=0.0001) → BatchNorm → Dropout(0.3)  
+- Dense(64, ReLU, L2=0.0001) → BatchNorm → Dropout(0.2)  
+- Dense(32, ReLU, L2=0.0001) → BatchNorm → Dropout(0.1)  
+- Output Layer (Sigmoid)  
 
-Optimizer: Adam (learning rate=0.0005)
-Loss: Binary Crossentropy with class weights (1.5x for Diabetic class)
-Training:
-Early Stopping (patience=10)
-ReduceLROnPlateau (factor=0.5, patience=5)
-K-Fold Cross-Validation (5 folds)
+**Training Details:**  
+- Optimizer: **Adam** (learning rate = 0.0005)  
+- Loss: **Binary Crossentropy** with class weights (1.5× for Diabetic class)  
+- Regularization: Dropout, BatchNorm, L2  
+- K-Fold Cross-Validation (5 folds)  
+- Early Stopping (patience = 10)  
+- ReduceLROnPlateau (factor = 0.5, patience = 5)  
+- **SMOTE** applied (sampling strategy = 0.9)  
 
+---
 
-SMOTE: Applied with sampling strategy=0.9 to balance training data
+## 🔹 Fuzzy Logic System
 
-Fuzzy Logic System
+**Inputs:**  
+- Risk (from NN probability): 0–1  
+- Glucose: 0–400 mg/dL  
+- BMI: 0–80  
+- Blood Pressure: 50–150 mmHg  
+- Age: 20–100 years  
 
-Inputs:
-Risk (from NN probability): 0–1
-Glucose: 0–400 mg/dL
-BMI: 0–80
-Blood Pressure: 50–150 mmHg
-Age: 20–100 years
+**Membership Functions:**  
+- Trapezoidal (Low, Normal, High for most inputs)  
+- Age categories: Young, Middle, Old  
 
+**Rules:**  
+- 48 expert-defined rules  
+- Example: *High Glucose + High BMI → High Risk*  
 
-Membership Functions: Trapezoidal (Low, Normal, High for most; Young, Middle, Old for Age)
-Rules: 48 expert-defined rules (e.g., High Glucose + High BMI → High Risk)
-Output: Risk score (0–1) with labels (Low: ≤0.35, Medium: ≤0.8, High: >0.8)
-Defuzzification: Centroid method
+**Output:**  
+- Risk score (0–1)  
+- Labels:  
+  - Low (≤0.35)  
+  - Medium (≤0.8)  
+  - High (>0.8)  
+- Defuzzification: **Centroid method**  
 
-Ensemble Prediction
+---
 
-Combined Score: 0.8 * NN_Probability + 0.2 * Fuzzy_Score
-Threshold: >0.6 → Diabetic, else Non-Diabetic
+## 🔹 Ensemble Prediction
 
-Results and Evaluation
+- Final Score: **0.8 × NN Probability + 0.2 × Fuzzy Score**  
+- Threshold: >0.6 → Diabetic, else Non-Diabetic  
 
-Dataset Sizes:
-Training (post-SMOTE): 735 samples
-Testing: 175 samples
+---
 
+## 📊 Results & Evaluation
 
-Class Distribution (post-SMOTE):
-Training: 52.65% Non-Diabetic, 47.35% Diabetic
-Testing: 55.43% Non-Diabetic, 44.57% Diabetic
+**Dataset Sizes:**  
+- Training (post-SMOTE): **735 samples**  
+- Testing: **175 samples**  
 
+**Class Distribution (post-SMOTE):**  
+- Training: 52.65% Non-Diabetic | 47.35% Diabetic  
+- Testing: 55.43% Non-Diabetic | 44.57% Diabetic  
 
-Performance:
-Neural Network: Accuracy ~78%, ROC-AUC ~0.87
-Fuzzy System: Accuracy ~75%
-Ensemble: Accuracy 78%, ROC-AUC 0.8759
+**Performance:**  
+- Neural Network: Accuracy ≈ **78%**, ROC-AUC ≈ **0.87**  
+- Fuzzy System: Accuracy ≈ **75%**  
+- Ensemble: Accuracy ≈ **78%**, ROC-AUC ≈ **0.8759**  
+
 
 
