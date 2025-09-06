@@ -1,0 +1,10 @@
+Pregnancies
+Age
+BloodPressure
+Insulin
+Insulin_Pedigree
+SkinThickness
+Log_Insulin
+Glucose
+Glucose_BMI
+BMI
